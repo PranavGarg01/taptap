@@ -54,6 +54,12 @@ public class MainActivity extends AppCompatActivity  {
         this.mp1 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
         this.mp2 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
     }
+
+    /**
+     *
+     * @param b Gets the player number eg. PLAYER 1 OR PLAYER 2
+     * @return color
+     */
     // This function below is to assign colors to layouts when a swipe is completed. It doesn't give the same color again. :)
     public String color_palette(int b)
     {
@@ -75,7 +81,13 @@ public class MainActivity extends AppCompatActivity  {
         }
         return color;
     }
-    // This following function helps to assign random and different task every time.
+
+    /**
+     * // This following function helps to assign random and different task every time.
+     *
+     * @param a gets the player number eg.PLAYER 1 OR PLAYER 2
+     * @return tasker
+     */
     public int tasker(int a) {
         int tasker;
         if(a==1) {
