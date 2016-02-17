@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity  {
         this.mp1 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
         this.mp2 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
     }
+    // This function below is to assign colors to layouts when a swipe is completed. It doesn't give the same color again. :)
     public String color_palette(int b)
     {
         int s;
@@ -431,7 +432,7 @@ public class MainActivity extends AppCompatActivity  {
         if (eventAction == MotionEvent.ACTION_MOVE)
         {
             if (System.currentTimeMillis() - time_p1 >= 900) {
-                vibrator.vibrate(80);
+                vibrator.vibrate(300);
                 task_progress1 = 1;
                 task1 = 0;
                 ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
@@ -566,7 +567,7 @@ public class MainActivity extends AppCompatActivity  {
         {
             if (System.currentTimeMillis() - time_p2 >= 900) {
                 task_progress2 = 1;
-                vibrator.vibrate(80);
+                vibrator.vibrate(300);
                 task2 = 0;
                 ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
             }
