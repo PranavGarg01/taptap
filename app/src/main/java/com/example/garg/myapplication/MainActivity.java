@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity  {
+    String colors[] = {"#EF5350","#D81B60","#AB47BC","#5E35B1","#3949AB","#1E88E5","#039BE5","#00ACC1","#00897B","#4CAF50","#7CB342","#CDDC39","#FDD835","#FF9800","#F4511E"};
+    // All these above colors are from google color palette.There are some 500s and some 600s. Total 15 color. and 14 according to array.
     private int count = 0;
     private int count2 = 0;
     public MediaPlayer mp1;
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity  {
     int x12;
     int x21;
     int x22;
+
+    int last_task1=0;
+    int last_task2=0;
     Runnable myRunnable;
 
     @Override
@@ -46,7 +51,24 @@ public class MainActivity extends AppCompatActivity  {
         this.mp1 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
         this.mp2 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
     }
-
+    // This following function helps to assign random and different task every time.
+    public int tasker(int a) {
+        int tasker;
+        if(a==1) {
+            do {
+                tasker = ((int) (Math.random() * 6.0D) + 1);
+            } while (tasker == last_task1);
+            last_task1 = tasker;
+        }
+        else
+        {
+            do {
+                tasker = ((int) (Math.random() * 6.0D) + 1);
+            } while (tasker == last_task2);
+            last_task2 = tasker;
+        }
+        return tasker;
+    }
 
     @Override
     protected void onStart() {
@@ -56,8 +78,7 @@ public class MainActivity extends AppCompatActivity  {
         myRunnable = new Runnable() {
             @Override
             public void run() {
-                /* Giving numbers from 3-6 for waiting time for seconds. */
-
+                /* Giving numbers from 3-6 for waiting time for seconds. it puts them into a string */
                 for(int i=0;i<20;i++)
                 {
                     sec[i] = 3 + (int)(Math.random() * ((6 - 3) + 1));
@@ -66,7 +87,7 @@ public class MainActivity extends AppCompatActivity  {
                 //the main while loop
                 while (x < 60) {
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(1000);// Waits for 1 second (1000 milliseconds)
                         Log.d("s1=", "" + s1);
                         if (task_progress1 == 0)
                         {
@@ -92,7 +113,7 @@ public class MainActivity extends AppCompatActivity  {
                             if (x == s2) {
 
                                 task_progress2 = 0;
-                                task2 = ((int)(Math.random() * 6.0D) + 1);
+                                task2 = tasker(2);
                                 Log.d("task2/s=" + s2, "" + task2);
                                 s2 = sec[s_inc2] + s2;
 
@@ -111,7 +132,7 @@ public class MainActivity extends AppCompatActivity  {
                             if (x == s1) {
 
                                 task_progress1 = 0;
-                                task1 = ((int)(Math.random() * 6.0D) + 1);
+                                task1 = tasker(1);
                                 Log.d("task1/s=" + s1, "" + task1);
                                 s1 = sec[s_inc1] + s1;
                                 s_inc1 ++;
@@ -131,79 +152,73 @@ public class MainActivity extends AppCompatActivity  {
                             s2=sec[s_inc2];
                         }
                         x++;
-                        // Waits for 1 second (1000 milliseconds)
-
-
                         myLayout.post(new Runnable() {
                             @Override
                             public void run() {
-                                TextView textView1 = (TextView) findViewById(R.id.textView);
-                                TextView textView2 = (TextView) findViewById(R.id.textView3);
-                                switch(task1) {
-                                    case 1 :
+                            TextView textView1 = (TextView) findViewById(R.id.textView);
+                            TextView textView2 = (TextView) findViewById(R.id.textView3);
+                            switch(task1) {
+                                case 1 :
                                         textView1.setText("Swipe up");
 
                                         break;
-                                    case 2 :
+                                case 2 :
                                         textView1.setText("Swipe Right");
 
                                         break;
-                                    case 3 :
+                                case 3 :
                                         textView1.setText("Swipe left");
 
                                         break;
-                                    case 4 :
+                                case 4 :
                                         textView1.setText("Swipe down");
 
                                         break;
-                                    case 5 :
+                                case 5 :
                                         textView1.setText("Long Press");
 
                                         break;
-                                    case 6 :
+                                case 6 :
                                         textView1.setText("Don't Tap");
 
                                         break;
-                                    case 0 :
+                                case 0 :
                                         textView1.setText("Tap Fast");
 
                                         break;
-                                    default :
+                                default :
+                            }
+                            switch(task2) {
+                                case 1 :
 
-                                }
-                                switch(task2) {
-                                    case 1 :
+                                    textView2.setText("Swipe up");
+                                    break;
+                                case 2 :
 
-                                        textView2.setText("Swipe up");
-                                        break;
-                                    case 2 :
+                                    textView2.setText("Swipe Right");
+                                    break;
+                                case 3 :
 
-                                        textView2.setText("Swipe Right");
-                                        break;
-                                    case 3 :
+                                    textView2.setText("Swipe left");
+                                    break;
+                                case 4 :
 
-                                        textView2.setText("Swipe left");
-                                        break;
-                                    case 4 :
+                                    textView2.setText("Swipe down");
+                                    break;
+                                case 5 :
 
-                                        textView2.setText("Swipe down");
-                                        break;
-                                    case 5 :
+                                    textView2.setText("Long Press");
+                                    break;
+                                case 6 :
 
-                                        textView2.setText("Long Press");
-                                        break;
-                                    case 6 :
+                                    textView2.setText("Don't Tap");
+                                    break;
+                                case 0 :
 
-                                        textView2.setText("Don't Tap");
-                                        break;
-                                    case 0 :
-
-                                        textView2.setText("Tap Fast");
-                                        break;
-                                    default :
-
-                                }
-
+                                    textView2.setText("Tap Fast");
+                                    break;
+                                default :
+                            }
                             }
                         });
 
@@ -392,7 +407,7 @@ public class MainActivity extends AppCompatActivity  {
         {
             if (System.currentTimeMillis() - time_p1 >= 900) {
                 task_progress1 = 1;
-                vibrator.vibrate(30);
+                vibrator.vibrate(80);
                 task1 = 0;
                 ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
             }
@@ -519,7 +534,7 @@ public class MainActivity extends AppCompatActivity  {
         {
             if (System.currentTimeMillis() - time_p2 >= 900) {
                 task_progress2 = 1;
-                vibrator.vibrate(30);
+                vibrator.vibrate(80);
                 task2 = 0;
                 ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
             }
