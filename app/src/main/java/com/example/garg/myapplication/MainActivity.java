@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,13 +24,14 @@ public class MainActivity extends AppCompatActivity  {
     public MediaPlayer mp2;
     LinearLayout myLayout;
     LinearLayout myLayout2;
+    int u1=0,u2=0;
     int s1 = 1;
     int s2 = 1;
     int s_inc1 = 0;
     int s_inc2 = 0;
     int sec[] = new int[20];
-    int task1 = 0;
-    int task2 = 0;
+    int task1 = 7;
+    int task2 = 7;
     int task_progress1 = 1;
     int task_progress2 = 1;
     long time_p1;
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity  {
     int last_task1=0;
     int last_task2=0;
     Runnable myRunnable;
-
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,165 +93,173 @@ public class MainActivity extends AppCompatActivity  {
         }
         return tasker;
     }
-
     @Override
     protected void onStart() {
         super.onStart();
+
         myLayout = (LinearLayout) findViewById(R.id.LinearLayout1);
         myLayout2 = (LinearLayout) findViewById(R.id.LinearLayout2);
         myRunnable = new Runnable() {
             @Override
             public void run() {
-                /* Giving numbers from 3-6 for waiting time for seconds. it puts them into a string */
-                for(int i=0;i<20;i++)
+                while(u1==0 || u2==0) // if user not ready
                 {
-                    sec[i] = 3 + (int)(Math.random() * ((6 - 3) + 1));
-
+                    handler.post(new Runnable() {
+                        public void run() {
+                            if  (u1==0 && u2==1)
+                            {
+                                // FIXME: 17-Feb-16 I want to be changed to Image Background instead of TextViews
+                                ((TextView)findViewById(R.id.textView)).setText("TAP TO START");
+                                ((TextView)findViewById(R.id.textView3)).setText("WAITING FOR PLAYER 1");
+                            }
+                            if  (u1==1 && u2==0)
+                            {
+                                // FIXME: 17-Feb-16 I want to be changed to Image Background instead of TextViews
+                                ((TextView)findViewById(R.id.textView3)).setText("TAP TO START");
+                                ((TextView)findViewById(R.id.textView)).setText("WAITING FOR PLAYER 2");
+                            }
+                        }
+                    });
                 }
-                //the main while loop
-                while (x < 60) {
-                    try {
-                        Thread.sleep(1000);// Waits for 1 second (1000 milliseconds)
-                        Log.d("s1=", "" + s1);
-                        if (task_progress1 == 0)
-                        {
-                            Log.d("task_progress1 = ", "" + task_progress1);
-                            if (x == s1)
-                            {
-                                s1 = sec[s_inc1] + s1;
-                                s_inc1++;
-                            }
-                        }
-                        if (task_progress2 == 0)
-                        {
-                            Log.d("task_progress2 = ", "" + task_progress2);
-                            if (x == s2)
-                            {
-                                s2 = sec[s_inc2] + s2;
-                                s_inc2 ++;
-                            }
-                        }
-                        if (task_progress2 == 1)
-                        {
-                            Log.d("task_progress2 = ", "" + task_progress2);
-                            if (x == s2) {
-
-                                task_progress2 = 0;
-                                task2 = tasker(2);
-                                Log.d("task2/s=" + s2, "" + task2);
-                                s2 = sec[s_inc2] + s2;
-
-                                s_inc2 ++;
-                                if (task2 == 6) {
-                                    task_progress2 = 1;
-                                }
-                            }
-                            else {
-                                task2 = 0;
-                            }
-                        }
-                        if (task_progress1 == 1)
-                        {
-                            Log.d("task_progress1 = ", "" + task_progress1);
-                            if (x == s1) {
-
-                                task_progress1 = 0;
-                                task1 = tasker(1);
-                                Log.d("task1/s=" + s1, "" + task1);
-                                s1 = sec[s_inc1] + s1;
-                                s_inc1 ++;
-                                if (task1 == 6) {
-                                    task_progress1 = 1;
-                                }
-                            }
-                            else
-                            {
-                                task1 = 0;
-                            }
-                        }
-                    /* CAUTION this if statement is a hardcoding thing where its to help me a lot. Thanks to my instant idea. Don't change anything here. */
-                        if(x<3)
-                        {
-                            s1=sec[s_inc1];
-                            s2=sec[s_inc2];
-                        }
-                        x++;
-                        myLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                            TextView textView1 = (TextView) findViewById(R.id.textView);
-                            TextView textView2 = (TextView) findViewById(R.id.textView3);
-                            switch(task1) {
-                                case 1 :
-                                        textView1.setText("Swipe up");
-
-                                        break;
-                                case 2 :
-                                        textView1.setText("Swipe Right");
-
-                                        break;
-                                case 3 :
-                                        textView1.setText("Swipe left");
-
-                                        break;
-                                case 4 :
-                                        textView1.setText("Swipe down");
-
-                                        break;
-                                case 5 :
-                                        textView1.setText("Long Press");
-
-                                        break;
-                                case 6 :
-                                        textView1.setText("Don't Tap");
-
-                                        break;
-                                case 0 :
-                                        textView1.setText("Tap Fast");
-
-                                        break;
-                                default :
-                            }
-                            switch(task2) {
-                                case 1 :
-
-                                    textView2.setText("Swipe up");
-                                    break;
-                                case 2 :
-
-                                    textView2.setText("Swipe Right");
-                                    break;
-                                case 3 :
-
-                                    textView2.setText("Swipe left");
-                                    break;
-                                case 4 :
-
-                                    textView2.setText("Swipe down");
-                                    break;
-                                case 5 :
-
-                                    textView2.setText("Long Press");
-                                    break;
-                                case 6 :
-
-                                    textView2.setText("Don't Tap");
-                                    break;
-                                case 0 :
-
-                                    textView2.setText("Tap Fast");
-                                    break;
-                                default :
-                            }
-                            }
-                        });
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                /* Giving numbers from 3-6 for waiting time for seconds. it puts them into a string */
+                    for (int i = 0; i < 20; i++) {
+                        sec[i] = 3 + (int) (Math.random() * ((6 - 3) + 1));
 
                     }
-                };
-            };
+                    //the main while loop
+                    while (x < 60) {
+                        try {
+
+                            Log.d("s1=", "" + s1);
+                            if (task_progress1 == 0) {
+                                Log.d("task_progress1 = ", "" + task_progress1);
+                                if (x == s1) {
+                                    s1 = sec[s_inc1] + s1;
+                                    s_inc1++;
+                                }
+                            }
+                            if (task_progress2 == 0) {
+                                Log.d("task_progress2 = ", "" + task_progress2);
+                                if (x == s2) {
+                                    s2 = sec[s_inc2] + s2;
+                                    s_inc2++;
+                                }
+                            }
+                            if (task_progress2 == 1) {
+                                Log.d("task_progress2 = ", "" + task_progress2);
+                                if (x == s2) {
+
+                                    task_progress2 = 0;
+                                    task2 = tasker(2);
+                                    Log.d("task2/s=" + s2, "" + task2);
+                                    s2 = sec[s_inc2] + s2;
+
+                                    s_inc2++;
+                                    if (task2 == 6) {
+                                        task_progress2 = 1;
+                                    }
+                                } else {
+                                    task2 = 0;
+                                }
+                            }
+                            if (task_progress1 == 1) {
+                                Log.d("task_progress1 = ", "" + task_progress1);
+                                if (x == s1) {
+
+                                    task_progress1 = 0;
+                                    task1 = tasker(1);
+                                    Log.d("task1/s=" + s1, "" + task1);
+                                    s1 = sec[s_inc1] + s1;
+                                    s_inc1++;
+                                    if (task1 == 6) {
+                                        task_progress1 = 1;
+                                    }
+                                } else {
+                                    task1 = 0;
+                                }
+                            }
+                    /* CAUTION this if statement is a hardcoding thing where its to help me a lot. Thanks to my instant idea. Don't change anything here. */
+                            if (x < 3) {
+                                s1 = sec[s_inc1];
+                                s2 = sec[s_inc2];
+                            }
+                            x++;
+                            myLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    TextView textView1 = (TextView) findViewById(R.id.textView);
+                                    TextView textView2 = (TextView) findViewById(R.id.textView3);
+                                    switch (task1) {
+                                        case 1:
+                                            textView1.setText("Swipe up");
+
+                                            break;
+                                        case 2:
+                                            textView1.setText("Swipe Right");
+
+                                            break;
+                                        case 3:
+                                            textView1.setText("Swipe left");
+
+                                            break;
+                                        case 4:
+                                            textView1.setText("Swipe down");
+
+                                            break;
+                                        case 5:
+                                            textView1.setText("Long Press");
+
+                                            break;
+                                        case 6:
+                                            textView1.setText("Don't Tap");
+
+                                            break;
+                                        case 0:
+                                            textView1.setText("Tap Fast");
+
+                                            break;
+                                        default:
+                                    }
+                                    switch (task2) {
+                                        case 1:
+
+                                            textView2.setText("Swipe up");
+                                            break;
+                                        case 2:
+
+                                            textView2.setText("Swipe Right");
+                                            break;
+                                        case 3:
+
+                                            textView2.setText("Swipe left");
+                                            break;
+                                        case 4:
+
+                                            textView2.setText("Swipe down");
+                                            break;
+                                        case 5:
+
+                                            textView2.setText("Long Press");
+                                            break;
+                                        case 6:
+
+                                            textView2.setText("Don't Tap");
+                                            break;
+                                        case 0:
+
+                                            textView2.setText("Tap Fast");
+                                            break;
+                                        default:
+                                    }
+                                }
+                            });
+                            Thread.sleep(1000);// Waits for 1 second (1000 milliseconds)
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+            }
         };
             Thread myThread = new Thread(myRunnable);
             myThread.start();
@@ -258,7 +268,7 @@ public class MainActivity extends AppCompatActivity  {
             //OnTouchListener for PLAYER 1
             myLayout.setOnTouchListener(new LinearLayout.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent m) {
-
+                    u1 = 1;
                     switch(task1) {
                         case 1 :
                             swipe_up1(m);
@@ -293,6 +303,7 @@ public class MainActivity extends AppCompatActivity  {
 
             myLayout2.setOnTouchListener(new LinearLayout.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent m) {
+                    u2 = 1;
                     switch(task2) {
                         case 1 :
                             swipe_up2(m);

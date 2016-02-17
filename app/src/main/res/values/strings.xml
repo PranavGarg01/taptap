@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">My Application</string>
-    <string name="task">Tap Tap</string>
+    <string name="app_name">Tap Tap Multiplayer</string>
+    <string name="task">TAP TO START</string>
     <string name="count">0</string>
     <string name="action_settings">Settings</string>
 </resources>
