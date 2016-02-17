@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity  {
-    String colors[] = {"#EF5350","#D81B60","#AB47BC","#5E35B1","#3949AB","#1E88E5","#039BE5","#00ACC1","#00897B","#4CAF50","#7CB342","#CDDC39","#FDD835","#FF9800","#F4511E"};
+    String colors[] = {"#F44336","#F50057","#D500F9","#651FFF","#536DFE","#2196F3","#00B0FF","#18FFFF","#1DE9B6","#00E676","#AEEA00","#FFEA00","#FF9100","#F4511E"};
     // All these above colors are from google color palette.There are some 500s and some 600s. Total 15 color. and 14 according to array.
     private int count = 0;
     private int count2 = 0;
@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity  {
     int x12;
     int x21;
     int x22;
-
+    String last_color1;
+    String last_color2;
     int last_task1=0;
     int last_task2=0;
     Runnable myRunnable;
@@ -50,6 +51,26 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         this.mp1 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
         this.mp2 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
+    }
+    public String color_palette(int b)
+    {
+        int s;
+        String color;
+        if (b==1) {
+            do {
+                s = (int) (Math.random() * 14.0D);
+                color = colors[s];
+            } while (color.equals(last_color1) || color.equals(last_color2));
+            last_color1 = color;
+        } else
+        {
+            do {
+                s = (int) (Math.random() * 14.0D);
+                color = colors[s];
+            } while (color.equals(last_color1) || color.equals(last_color2));
+            last_color2 = color;
+        }
+        return color;
     }
     // This following function helps to assign random and different task every time.
     public int tasker(int a) {
@@ -318,6 +339,8 @@ public class MainActivity extends AppCompatActivity  {
             if (x21 - x11 > 250)
             {
                 task_progress1 = 1;
+                String color = color_palette(1);
+                myLayout.setBackgroundColor(Color.parseColor(color));
                 task1=0;
                 ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
             } else {
@@ -340,7 +363,8 @@ public class MainActivity extends AppCompatActivity  {
             if (x21 - x11 < -250)
             {
                 task_progress1 = 1;
-                myLayout.setBackgroundColor(Color.RED);
+                String color = color_palette(1);
+                myLayout.setBackgroundColor(Color.parseColor(color));
                 task1=0;
                 ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
             } else {
@@ -363,14 +387,14 @@ public class MainActivity extends AppCompatActivity  {
             if (x21 - x11 > 250)
             {
                 task_progress1 = 1;
-                myLayout.setBackgroundColor(Color.CYAN);
+                String color = color_palette(1);
+                myLayout.setBackgroundColor(Color.parseColor(color));
                 task1=0;
                 ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
             } else {
                 task_progress1 = 0;
             }
         }
-
     }
     void swipe_down1(MotionEvent m)
     {
@@ -386,6 +410,8 @@ public class MainActivity extends AppCompatActivity  {
             if (x21 - x11 < -250)
             {
                 task_progress1 = 1;
+                String color = color_palette(1);
+                myLayout.setBackgroundColor(Color.parseColor(color));
                 task1=0;
                 ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
             } else
@@ -393,7 +419,6 @@ public class MainActivity extends AppCompatActivity  {
                 task_progress1 = 0;
             }
         }
-
     }
     void long_press1(MotionEvent m)
     {
@@ -406,8 +431,8 @@ public class MainActivity extends AppCompatActivity  {
         if (eventAction == MotionEvent.ACTION_MOVE)
         {
             if (System.currentTimeMillis() - time_p1 >= 900) {
-                task_progress1 = 1;
                 vibrator.vibrate(80);
+                task_progress1 = 1;
                 task1 = 0;
                 ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
             }
@@ -416,7 +441,6 @@ public class MainActivity extends AppCompatActivity  {
         {
             time_p1 = 0;
         }
-
     }
     void dont_tap1(MotionEvent m)
     {
@@ -458,7 +482,10 @@ public class MainActivity extends AppCompatActivity  {
             x22 = ((int)m.getY());
             if (x22 - x12 < -250) {
                 task_progress2 = 1;
+                String color = color_palette(2);
+                myLayout2.setBackgroundColor(Color.parseColor(color));
                 task2 = 0;
+                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
             } else {
                 task_progress2 = 0;
             }
@@ -476,7 +503,8 @@ public class MainActivity extends AppCompatActivity  {
             x22 = ((int)m.getX());
             if (x22 - x12 > 250) {
                 task_progress2 = 1;
-                myLayout2.setBackgroundColor(Color.BLUE);
+                String color = color_palette(2);
+                myLayout2.setBackgroundColor(Color.parseColor(color));
                 task2 = 0;
                 ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
             } else {
@@ -496,7 +524,8 @@ public class MainActivity extends AppCompatActivity  {
             x22 = ((int)m.getX());
             if (x22 - x12 < -250) {
                 task_progress2 = 1;
-                myLayout2.setBackgroundColor(Color.GREEN);
+                String color = color_palette(2);
+                myLayout2.setBackgroundColor(Color.parseColor(color));
                 task2 = 0;
                 ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
             } else {
@@ -516,7 +545,10 @@ public class MainActivity extends AppCompatActivity  {
             x22 = ((int)m.getY());
             if (x22 - x12 > 250) {
                 task_progress2 = 1;
+                String color = color_palette(2);
+                myLayout2.setBackgroundColor(Color.parseColor(color));
                 task2 = 0;
+                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
             } else {
                 task_progress2 = 0;
             }

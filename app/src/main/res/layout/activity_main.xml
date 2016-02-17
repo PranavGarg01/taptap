@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:id="@+id/LinearLayout1"
-        android:background="#673AB7"
+        android:background="#00B0FF"
         android:weightSum="1">
 
         <TextView
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#1DE9B6">
+        android:background="#FF6D00">
 
         <TextView
             android:id="@+id/textView2"
