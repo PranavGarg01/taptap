@@ -10,7 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity  {
     public MediaPlayer mp2;
     LinearLayout myLayout;
     LinearLayout myLayout2;
+    RelativeLayout myLayout3;
     int u1=0,u2=0;
     int s1 = 1;
     int s2 = 1;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity  {
     String last_color2;
     int last_task1=0;
     int last_task2=0;
+    int pause;
     Runnable myRunnable;
     Handler handler = new Handler();
     @Override
@@ -108,9 +112,9 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onStart() {
         super.onStart();
-
         myLayout = (LinearLayout) findViewById(R.id.LinearLayout1);
         myLayout2 = (LinearLayout) findViewById(R.id.LinearLayout2);
+        myLayout3 = (RelativeLayout) findViewById(R.id.pausemenu);
         myRunnable = new Runnable() {
             @Override
             public void run() {
@@ -141,6 +145,11 @@ public class MainActivity extends AppCompatActivity  {
                     //the main while loop
                     while (x < 60) {
                         try {
+                            while(pause == 1)
+                            {
+                                Thread.sleep(800);
+
+                            }
 
                             Log.d("s1=", "" + s1);
                             if (task_progress1 == 0) {
@@ -279,40 +288,60 @@ public class MainActivity extends AppCompatActivity  {
 
             //OnTouchListener for PLAYER 1
             myLayout.setOnTouchListener(new LinearLayout.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent m) {
-                    u1 = 1;
-                    switch(task1) {
-                        case 1 :
-                            swipe_up1(m);
-                            break;
-                        case 2 :
-                            swipe_right1(m);
-                            break;
-                        case 3 :
-                            swipe_left1(m);
-                            break;
-                        case 4 :
-                            swipe_down1(m);
-                            break;
-                        case 5 :
-                            long_press1(m);
-                            break;
-                        case 6 :
-                            dont_tap1(m);
-                            break;
-                        case 0 :
-                            tap1(m);
-                            break;
-                        default :
+                                            public boolean onTouch(View v, MotionEvent m) {
+                                                u1 = 1;
+                                                switch (task1) {
+                                                    case 1:
+                                                        swipe_up1(m);
+                                                        break;
+                                                    case 2:
+                                                        swipe_right1(m);
+                                                        break;
+                                                    case 3:
+                                                        swipe_left1(m);
+                                                        break;
+                                                    case 4:
+                                                        swipe_down1(m);
+                                                        break;
+                                                    case 5:
+                                                        long_press1(m);
+                                                        break;
+                                                    case 6:
+                                                        dont_tap1(m);
+                                                        break;
+                                                    case 0:
+                                                        tap1(m);
+                                                        break;
+                                                    default:
 
-                    }
-                    return true;
+                                                }
+                                                return true;
 
-                }
-            }
+                                            }
+                                        }
             );
+        // Setting up onClickListener for the pause button
+        final Button pauseButton = (Button)findViewById(R.id.button1);
+        final Button resumeButton = (Button)findViewById(R.id.button2);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                pause = 1;
+                pauseButton.setVisibility(Button.GONE);
+                myLayout3.setVisibility(RelativeLayout.VISIBLE);
+                myLayout.setVisibility(LinearLayout.GONE);
+                myLayout2.setVisibility(LinearLayout.GONE);
+            }
+        });
+        resumeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                pause = 0;
+                myLayout3.setVisibility(RelativeLayout.GONE);
+                pauseButton.setVisibility(Button.VISIBLE);
+                myLayout.setVisibility(LinearLayout.VISIBLE);
+                myLayout2.setVisibility(LinearLayout.VISIBLE);
+            }
+        });
             //OnTouchListener for PLAYER 2
-
             myLayout2.setOnTouchListener(new LinearLayout.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent m) {
                     u2 = 1;
