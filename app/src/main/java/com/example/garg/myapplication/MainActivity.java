@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity  {
     int last_task2=0;
     int pause;
     Runnable myRunnable;
+    int n=0;
+
     Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,56 +61,10 @@ public class MainActivity extends AppCompatActivity  {
         this.mp2 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
     }
 
-    /**
-     *
-     * @param b Gets the player number eg. PLAYER 1 OR PLAYER 2
-     * @return color
-     */
-    // This function below is to assign colors to layouts when a swipe is completed. It doesn't give the same color again. :)
-    public String color_palette(int b)
-    {
-        int s;
-        String color;
-        if (b==1) {
-            do {
-                s = (int) (Math.random() * 14.0D);
-                color = colors[s];
-            } while (color.equals(last_color1) || color.equals(last_color2));
-            last_color1 = color;
-        } else
-        {
-            do {
-                s = (int) (Math.random() * 14.0D);
-                color = colors[s];
-            } while (color.equals(last_color1) || color.equals(last_color2));
-            last_color2 = color;
-        }
-        return color;
-    }
 
-    /**
-     * // This following function helps to assign random and different task every time.
-     *
-     * @param a gets the player number eg.PLAYER 1 OR PLAYER 2
-     * @return tasker
-     */
-    public int tasker(int a) {
-        int tasker;
-        if(a==1) {
-            do {
-                tasker = ((int) (Math.random() * 6.0D) + 1);
-            } while (tasker == last_task1);
-            last_task1 = tasker;
-        }
-        else
-        {
-            do {
-                tasker = ((int) (Math.random() * 6.0D) + 1);
-            } while (tasker == last_task2);
-            last_task2 = tasker;
-        }
-        return tasker;
-    }
+
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -116,26 +72,52 @@ public class MainActivity extends AppCompatActivity  {
         myLayout2 = (LinearLayout) findViewById(R.id.LinearLayout2);
         myLayout3 = (RelativeLayout) findViewById(R.id.pausemenu);
         myRunnable = new Runnable() {
+            /**
+             * // This following function helps to assign random and different task every time.
+             *
+             * @param a gets the player number eg.PLAYER 1 OR PLAYER 2
+             * @return tasker
+             */
+            public int tasker(int a) {
+                int tasker;
+                if(a==1) {
+                    do {
+                        tasker = ((int) (Math.random() * 6.0D) + 1);
+                    } while (tasker == last_task1);
+                    last_task1 = tasker;
+                }
+                else
+                {
+                    do {
+                        tasker = ((int) (Math.random() * 6.0D) + 1);
+                    } while (tasker == last_task2);
+                    last_task2 = tasker;
+                }
+                return tasker;
+            }
             @Override
             public void run() {
+
                 while(u1==0 || u2==0) // if user not ready
                 {
-                    handler.post(new Runnable() {
-                        public void run() {
-                            if  (u1==0 && u2==1)
-                            {
-                                // FIXME: 17-Feb-16 I want to be changed to Image Background instead of TextViews
-                                ((TextView)findViewById(R.id.textView)).setText("TAP TO START");
-                                ((TextView)findViewById(R.id.textView3)).setText("WAITING FOR PLAYER 1");
+                    if(n!=1) {
+                        handler.post(new Runnable() {
+                            public void run() {
+                                if (u1 == 0 && u2 == 1) {
+                                    n=1;
+                                    // FIXME: 17-Feb-16 I want to be changed to Image Background instead of TextViews
+                                    ((TextView) findViewById(R.id.textView)).setText("TAP TO START");
+                                    ((TextView) findViewById(R.id.textView3)).setText("WAITING FOR PLAYER 1");
+                                }
+                                if (u1 == 1 && u2 == 0) {
+                                    n=1;
+                                    // FIXME: 17-Feb-16 I want to be changed to Image Background instead of TextViews
+                                    ((TextView) findViewById(R.id.textView3)).setText("TAP TO START");
+                                    ((TextView) findViewById(R.id.textView)).setText("WAITING FOR PLAYER 2");
+                                }
                             }
-                            if  (u1==1 && u2==0)
-                            {
-                                // FIXME: 17-Feb-16 I want to be changed to Image Background instead of TextViews
-                                ((TextView)findViewById(R.id.textView3)).setText("TAP TO START");
-                                ((TextView)findViewById(R.id.textView)).setText("WAITING FOR PLAYER 2");
-                            }
-                        }
-                    });
+                        });
+                    }
                 }
                 /* Giving numbers from 3-6 for waiting time for seconds. it puts them into a string */
                     for (int i = 0; i < 20; i++) {
@@ -284,374 +266,359 @@ public class MainActivity extends AppCompatActivity  {
         };
             Thread myThread = new Thread(myRunnable);
             myThread.start();
+        final Thread myThread1 = new Thread(new Runnable() {
+            /**
+             *
+             * @param b Gets the player number eg. PLAYER 1 OR PLAYER 2
+             * @return color
+             */
+            // This function below is to assign colors to layouts when a swipe is completed. It doesn't give the same color again. :)
 
+            public String color_palette(int b)
+            {
+                int s;
+                String color;
+                if (b==1) {
+                    do {
+                        s = (int) (Math.random() * 14.0D);
+                        color = colors[s];
+                    } while (color.equals(last_color1) || color.equals(last_color2));
+                    last_color1 = color;
+                } else
+                {
+                    do {
+                        s = (int) (Math.random() * 14.0D);
+                        color = colors[s];
+                    } while (color.equals(last_color1) || color.equals(last_color2));
+                    last_color2 = color;
+                }
+                return color;
+            }
+            @Override
+            public void run() {
+
+                // Setting up onClickListener for the pause button
+                final Button pauseButton = (Button)findViewById(R.id.button1);
+                final Button resumeButton = (Button)findViewById(R.id.button2);
+                pauseButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        pause = 1;
+                        pauseButton.setVisibility(Button.GONE);
+                        myLayout3.setVisibility(RelativeLayout.VISIBLE);
+                        myLayout.setVisibility(LinearLayout.GONE);
+                        myLayout2.setVisibility(LinearLayout.GONE);
+                    }
+                });
+                resumeButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        pause = 0;
+                        myLayout3.setVisibility(RelativeLayout.GONE);
+                        pauseButton.setVisibility(Button.VISIBLE);
+                        myLayout.setVisibility(LinearLayout.VISIBLE);
+                        myLayout2.setVisibility(LinearLayout.VISIBLE);
+                    }
+                });
+                //OnTouchListener for PLAYER 1
+                    myLayout.setOnTouchListener(new LinearLayout.OnTouchListener() {
+                                                    public boolean onTouch(View v, MotionEvent m) {
+                                                        u1 = 1;
+                                                        int eventAction;
+                                                        switch (task1) {
+                                                            case 1:
+                                                                //Swipe Up 1
+                                                                task_progress1 = 0;
+                                                                eventAction = m.getAction();
+                                                                if(eventAction == MotionEvent.ACTION_DOWN)
+                                                                {
+                                                                    x11 = (int) m.getY();
+                                                                }
+                                                                if(eventAction == MotionEvent.ACTION_MOVE)
+                                                                {
+                                                                    x21 = (int) m.getY();
+                                                                    if (x21 - x11 > 250)
+                                                                    {
+                                                                        task_progress1 = 1;
+                                                                        String color = color_palette(1);
+                                                                        myLayout.setBackgroundColor(Color.parseColor(color));
+                                                                        task1=0;
+                                                                        ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
+                                                                    } else {
+                                                                        task_progress1 = 0;
+                                                                    }
+                                                                }
+                                                                break;
+                                                            case 2:
+                                                                // Swipe Right 1
+                                                                task_progress1 = 0;
+                                                                eventAction = m.getAction();
+                                                                if(eventAction == MotionEvent.ACTION_DOWN)
+                                                                {
+                                                                    x11 = (int) m.getX();
+                                                                }
+                                                                if(eventAction == MotionEvent.ACTION_MOVE)
+                                                                {
+                                                                    x21 = (int) m.getX();
+                                                                    if (x21 - x11 < -250)
+                                                                    {
+                                                                        task_progress1 = 1;
+                                                                        String color = color_palette(1);
+                                                                        myLayout.setBackgroundColor(Color.parseColor(color));
+                                                                        task1=0;
+                                                                        ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
+                                                                    } else {
+                                                                        task_progress1 = 0;
+                                                                    }
+                                                                }
+
+                                                                break;
+                                                            case 3:
+                                                                //Swipe Left 1
+                                                                task_progress1 = 0;
+                                                                eventAction = m.getAction();
+                                                                if(eventAction == MotionEvent.ACTION_DOWN)
+                                                                {
+                                                                    x11 = (int) m.getX();
+                                                                }
+                                                                if(eventAction == MotionEvent.ACTION_MOVE)
+                                                                {
+                                                                    x21 = (int) m.getX();
+                                                                    if (x21 - x11 > 250)
+                                                                    {
+                                                                        task_progress1 = 1;
+                                                                        String color = color_palette(1);
+                                                                        myLayout.setBackgroundColor(Color.parseColor(color));
+                                                                        task1=0;
+                                                                        ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
+                                                                    } else {
+                                                                        task_progress1 = 0;
+                                                                    }
+                                                                }
+                                                                break;
+                                                            case 4:
+                                                                //Swipe Down 1
+                                                                task_progress1 = 0;
+                                                                eventAction = m.getAction();
+                                                                if(eventAction == MotionEvent.ACTION_DOWN)
+                                                                {
+                                                                    x11 = (int) m.getY();
+                                                                }
+                                                                if(eventAction == MotionEvent.ACTION_MOVE)
+                                                                {
+                                                                    x21 = (int) m.getY();
+                                                                    if (x21 - x11 < -250)
+                                                                    {
+                                                                        task_progress1 = 1;
+                                                                        String color = color_palette(1);
+                                                                        myLayout.setBackgroundColor(Color.parseColor(color));
+                                                                        task1=0;
+                                                                        ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
+                                                                    } else
+                                                                    {
+                                                                        task_progress1 = 0;
+                                                                    }
+                                                                }
+                                                                break;
+                                                            case 5:
+                                                                //Long Press 1
+                                                                task_progress1 = 0;
+                                                                Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                                                                eventAction = m.getAction();
+                                                                if (eventAction == MotionEvent.ACTION_DOWN) {
+                                                                    time_p1 = System.currentTimeMillis();
+                                                                }
+                                                                if (eventAction == MotionEvent.ACTION_MOVE)
+                                                                {
+                                                                    if (System.currentTimeMillis() - time_p1 >= 900) {
+                                                                        vibrator.vibrate(300);
+                                                                        task_progress1 = 1;
+                                                                        task1 = 0;
+                                                                        ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
+                                                                    }
+                                                                }
+                                                                if(eventAction == MotionEvent.ACTION_UP)
+                                                                {
+                                                                    time_p1 = 0;
+                                                                }
+                                                                break;
+                                                            case 6:
+                                                                //Don't Tap 1
+                                                                vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                                                                if (m.getAction() == MotionEvent.ACTION_DOWN)
+                                                                {
+                                                                    count -= 2;
+                                                                    vibrator.vibrate(100);
+                                                                    task_progress1 = 1;
+                                                                    ((TextView)findViewById(R.id.textView1)).setText("" + count);
+                                                                }
+                                                                task_progress1 = 1;
+                                                                break;
+                                                            case 0:
+                                                                //Tap Tap 1
+                                                                eventAction = m.getAction();
+                                                                TextView CountDisplay = (TextView)findViewById(R.id.textView1);
+                                                                if (eventAction == MotionEvent.ACTION_DOWN)
+                                                                {
+                                                                    mp1.start();
+                                                                    count += 1;
+                                                                    CountDisplay.setText("" + count);
+                                                                }
+                                                                task_progress1 = 1;
+                                                                break;
+                                                            default:
+
+                                                        }
+                                                        return true;
+
+                                                    }
+                                                }
+                    );
+                //OnTouchListener for PLAYER 2
+                myLayout2.setOnTouchListener(new LinearLayout.OnTouchListener() {
+                    public boolean onTouch(View v, MotionEvent m) {
+                        u2 = 1;
+                        int eventAction;
+                        switch(task2) {
+                            case 1 :
+                               //Swipe Up 2
+                                task_progress2 = 0;
+                                eventAction = m.getAction();
+                                if (eventAction == MotionEvent.ACTION_DOWN) {
+                                    x12 = ((int)m.getY());
+                                }
+                                if (eventAction == MotionEvent.ACTION_MOVE)
+                                {
+                                    x22 = ((int)m.getY());
+                                    if (x22 - x12 < -250) {
+                                        task_progress2 = 1;
+                                        String color = color_palette(2);
+                                        myLayout2.setBackgroundColor(Color.parseColor(color));
+                                        task2 = 0;
+                                        ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
+                                    } else {
+                                        task_progress2 = 0;
+                                    }
+                                }
+                                break;
+                            case 2 :
+                                //Swipe Right 2
+                                task_progress2 = 0;
+                                eventAction = m.getAction();
+                                if (eventAction == MotionEvent.ACTION_DOWN) {
+                                    x12 = ((int)m.getX());
+                                }
+                                if (eventAction == MotionEvent.ACTION_MOVE)
+                                {
+                                    x22 = ((int)m.getX());
+                                    if (x22 - x12 > 250) {
+                                        task_progress2 = 1;
+                                        String color = color_palette(2);
+                                        myLayout2.setBackgroundColor(Color.parseColor(color));
+                                        task2 = 0;
+                                        ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
+                                    } else {
+                                        task_progress2 = 0;
+                                    }
+                                }
+                                break;
+                            case 3 :
+                                //Swipe Left 2
+                                task_progress2 = 0;
+                                eventAction = m.getAction();
+                                if (eventAction == MotionEvent.ACTION_DOWN) {
+                                    x12 = ((int)m.getX());
+                                }
+                                if (eventAction == MotionEvent.ACTION_MOVE)
+                                {
+                                    x22 = ((int)m.getX());
+                                    if (x22 - x12 < -250) {
+                                        task_progress2 = 1;
+                                        String color = color_palette(2);
+                                        myLayout2.setBackgroundColor(Color.parseColor(color));
+                                        task2 = 0;
+                                        ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
+                                    } else {
+                                        task_progress2 = 0;
+                                    }
+                                }
+                                break;
+                            case 4 :
+                                //Swipe Down 2
+                                task_progress2 = 0;
+                                eventAction = m.getAction();
+                                if (eventAction == MotionEvent.ACTION_DOWN) {
+                                    x12 = ((int)m.getY());
+                                }
+                                if (eventAction == MotionEvent.ACTION_MOVE)
+                                {
+                                    x22 = ((int)m.getY());
+                                    if (x22 - x12 > 250) {
+                                        task_progress2 = 1;
+                                        String color = color_palette(2);
+                                        myLayout2.setBackgroundColor(Color.parseColor(color));
+                                        task2 = 0;
+                                        ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
+                                    } else {
+                                        task_progress2 = 0;
+                                    }
+                                }
+                                break;
+                            case 5 :
+                                //Long Press 2
+                                task_progress2 = 0;
+                                Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                                eventAction = m.getAction();
+                                if (eventAction == MotionEvent.ACTION_DOWN) {
+                                    time_p2 = System.currentTimeMillis();
+                                }
+                                if (eventAction == MotionEvent.ACTION_MOVE)
+                                {
+                                    if (System.currentTimeMillis() - time_p2 >= 900) {
+                                        task_progress2 = 1;
+                                        vibrator.vibrate(300);
+                                        task2 = 0;
+                                        ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
+                                    }
+                                }
+                                if(eventAction == MotionEvent.ACTION_UP)
+                                {
+                                    time_p2 = 0;
+                                }
+                                break;
+                            case 6 :
+                                //Don't Tap 2
+                                vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                                if (m.getAction() == MotionEvent.ACTION_DOWN)
+                                {
+                                    count2 -= 2;
+                                    vibrator.vibrate(100);
+                                    task_progress2 = 1;
+                                    ((TextView)findViewById(R.id.textView2)).setText("" + count2);
+                                }
+                                task_progress2 = 1;
+                                break;
+                            case 0 :
+                                //Tap Tap 2
+                                eventAction = m.getAction();
+                                TextView CountDisplay2 = (TextView)findViewById(R.id.textView2);
+                                if (eventAction == MotionEvent.ACTION_DOWN)
+                                {
+                                    mp2.start();
+                                    count2 += 1;
+                                    CountDisplay2.setText("" + count2);
+                                }
+                                task_progress2 = 1;
+                                break;
+                            default :
+                        }
+                        return  true;
+                    }
+                });
+            }
+        });
+        myThread1.start();
 
             //OnTouchListener for PLAYER 1
-            myLayout.setOnTouchListener(new LinearLayout.OnTouchListener() {
-                                            public boolean onTouch(View v, MotionEvent m) {
-                                                u1 = 1;
-                                                switch (task1) {
-                                                    case 1:
-                                                        swipe_up1(m);
-                                                        break;
-                                                    case 2:
-                                                        swipe_right1(m);
-                                                        break;
-                                                    case 3:
-                                                        swipe_left1(m);
-                                                        break;
-                                                    case 4:
-                                                        swipe_down1(m);
-                                                        break;
-                                                    case 5:
-                                                        long_press1(m);
-                                                        break;
-                                                    case 6:
-                                                        dont_tap1(m);
-                                                        break;
-                                                    case 0:
-                                                        tap1(m);
-                                                        break;
-                                                    default:
 
-                                                }
-                                                return true;
-
-                                            }
-                                        }
-            );
-        // Setting up onClickListener for the pause button
-        final Button pauseButton = (Button)findViewById(R.id.button1);
-        final Button resumeButton = (Button)findViewById(R.id.button2);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pause = 1;
-                pauseButton.setVisibility(Button.GONE);
-                myLayout3.setVisibility(RelativeLayout.VISIBLE);
-                myLayout.setVisibility(LinearLayout.GONE);
-                myLayout2.setVisibility(LinearLayout.GONE);
-            }
-        });
-        resumeButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pause = 0;
-                myLayout3.setVisibility(RelativeLayout.GONE);
-                pauseButton.setVisibility(Button.VISIBLE);
-                myLayout.setVisibility(LinearLayout.VISIBLE);
-                myLayout2.setVisibility(LinearLayout.VISIBLE);
-            }
-        });
-            //OnTouchListener for PLAYER 2
-            myLayout2.setOnTouchListener(new LinearLayout.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent m) {
-                    u2 = 1;
-                    switch(task2) {
-                        case 1 :
-                            swipe_up2(m);
-                            break;
-                        case 2 :
-                            swipe_right2(m);
-                            break;
-                        case 3 :
-                            swipe_left2(m);
-                            break;
-                        case 4 :
-                            swipe_down2(m);
-                            break;
-                        case 5 :
-                            long_press2(m);
-                            break;
-                        case 6 :
-                            dont_tap2(m);
-                            break;
-                        case 0 :
-                            tap2(m);
-                            break;
-                        default :
-
-                    }
-                    return  true;
-
-                }
-            });
-
-
-    }
-        // PLAYER 1 : myLayout :  LinearLayout1 = Functions for the player1.
-    void swipe_up1(MotionEvent m)
-    {
-        task_progress1 = 0;
-        int eventAction = m.getAction();
-        if(eventAction == MotionEvent.ACTION_DOWN)
-        {
-            x11 = (int) m.getY();
-        }
-        if(eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x21 = (int) m.getY();
-            if (x21 - x11 > 250)
-            {
-                task_progress1 = 1;
-                String color = color_palette(1);
-                myLayout.setBackgroundColor(Color.parseColor(color));
-                task1=0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
-            } else {
-                task_progress1 = 0;
-            }
-        }
-
-    }
-    void swipe_right1(MotionEvent m)
-    {
-        task_progress1 = 0;
-        int eventAction = m.getAction();
-        if(eventAction == MotionEvent.ACTION_DOWN)
-        {
-            x11 = (int) m.getX();
-        }
-        if(eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x21 = (int) m.getX();
-            if (x21 - x11 < -250)
-            {
-                task_progress1 = 1;
-                String color = color_palette(1);
-                myLayout.setBackgroundColor(Color.parseColor(color));
-                task1=0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
-            } else {
-                task_progress1 = 0;
-            }
-        }
-
-    }
-    void swipe_left1(MotionEvent m)
-    {
-        task_progress1 = 0;
-        int eventAction = m.getAction();
-        if(eventAction == MotionEvent.ACTION_DOWN)
-        {
-            x11 = (int) m.getX();
-        }
-        if(eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x21 = (int) m.getX();
-            if (x21 - x11 > 250)
-            {
-                task_progress1 = 1;
-                String color = color_palette(1);
-                myLayout.setBackgroundColor(Color.parseColor(color));
-                task1=0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
-            } else {
-                task_progress1 = 0;
-            }
-        }
-    }
-    void swipe_down1(MotionEvent m)
-    {
-        task_progress1 = 0;
-        int eventAction = m.getAction();
-        if(eventAction == MotionEvent.ACTION_DOWN)
-        {
-            x11 = (int) m.getY();
-        }
-        if(eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x21 = (int) m.getY();
-            if (x21 - x11 < -250)
-            {
-                task_progress1 = 1;
-                String color = color_palette(1);
-                myLayout.setBackgroundColor(Color.parseColor(color));
-                task1=0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
-            } else
-            {
-                task_progress1 = 0;
-            }
-        }
-    }
-    void long_press1(MotionEvent m)
-    {
-        task_progress1 = 0;
-        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        int eventAction = m.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
-            time_p1 = System.currentTimeMillis();
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            if (System.currentTimeMillis() - time_p1 >= 900) {
-                vibrator.vibrate(300);
-                task_progress1 = 1;
-                task1 = 0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
-            }
-        }
-        if(eventAction == MotionEvent.ACTION_UP)
-        {
-            time_p1 = 0;
-        }
-    }
-    void dont_tap1(MotionEvent m)
-    {
-        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        if (m.getAction() == MotionEvent.ACTION_DOWN)
-        {
-            count -= 2;
-            vibrator.vibrate(100);
-            task_progress1 = 1;
-            ((TextView)findViewById(R.id.textView1)).setText("" + count);
-        }
-        task_progress1 = 1;
-    }
-    void tap1(MotionEvent m)
-    {
-        int eventAction = m.getAction();
-        TextView CountDisplay = (TextView)findViewById(R.id.textView1);
-        if (eventAction == MotionEvent.ACTION_DOWN)
-        {
-            mp1.start();
-            count += 1;
-            CountDisplay.setText("" + count);
-        }
-        task_progress1 = 1;
-
-
-    }
-
-    // PLAYER 2 : myLayout2 :  LinearLayout2 = Functions for the player2.
-    void swipe_up2(MotionEvent m)
-    {
-        task_progress2 = 0;
-        int eventAction = m.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
-            x12 = ((int)m.getY());
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x22 = ((int)m.getY());
-            if (x22 - x12 < -250) {
-                task_progress2 = 1;
-                String color = color_palette(2);
-                myLayout2.setBackgroundColor(Color.parseColor(color));
-                task2 = 0;
-                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
-            } else {
-                task_progress2 = 0;
-            }
-        }
-    }
-    void swipe_right2(MotionEvent m)
-    {
-        task_progress2 = 0;
-        int eventAction = m.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
-            x12 = ((int)m.getX());
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x22 = ((int)m.getX());
-            if (x22 - x12 > 250) {
-                task_progress2 = 1;
-                String color = color_palette(2);
-                myLayout2.setBackgroundColor(Color.parseColor(color));
-                task2 = 0;
-                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
-            } else {
-                task_progress2 = 0;
-            }
-        }
-    }
-    void swipe_left2(MotionEvent m)
-    {
-        task_progress2 = 0;
-        int eventAction = m.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
-            x12 = ((int)m.getX());
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x22 = ((int)m.getX());
-            if (x22 - x12 < -250) {
-                task_progress2 = 1;
-                String color = color_palette(2);
-                myLayout2.setBackgroundColor(Color.parseColor(color));
-                task2 = 0;
-                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
-            } else {
-                task_progress2 = 0;
-            }
-        }
-    }
-    void swipe_down2(MotionEvent m)
-    {
-        task_progress2 = 0;
-        int eventAction = m.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
-            x12 = ((int)m.getY());
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            x22 = ((int)m.getY());
-            if (x22 - x12 > 250) {
-                task_progress2 = 1;
-                String color = color_palette(2);
-                myLayout2.setBackgroundColor(Color.parseColor(color));
-                task2 = 0;
-                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
-            } else {
-                task_progress2 = 0;
-            }
-        }
-    }
-    void long_press2(MotionEvent m)
-    {
-        task_progress2 = 0;
-        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        int eventAction = m.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
-            time_p2 = System.currentTimeMillis();
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            if (System.currentTimeMillis() - time_p2 >= 900) {
-                task_progress2 = 1;
-                vibrator.vibrate(300);
-                task2 = 0;
-                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
-            }
-        }
-        if(eventAction == MotionEvent.ACTION_UP)
-        {
-            time_p2 = 0;
-        }
-    }
-    void dont_tap2(MotionEvent m)
-    {
-        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        if (m.getAction() == MotionEvent.ACTION_DOWN)
-        {
-            count2 -= 2;
-            vibrator.vibrate(100);
-            task_progress2 = 1;
-            ((TextView)findViewById(R.id.textView2)).setText("" + count2);
-        }
-        task_progress2 = 1;
-    }
-    void tap2(MotionEvent m)
-    {
-        int eventAction = m.getAction();
-        TextView CountDisplay2 = (TextView)findViewById(R.id.textView2);
-        if (eventAction == MotionEvent.ACTION_DOWN)
-        {
-            mp2.start();
-            count2 += 1;
-            CountDisplay2.setText("" + count2);
-        }
-        task_progress2 = 1;
 
     }
     @Override
