@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity  {
     long time_p1;
     long time_p2;
     int x = 0;
-    int xxx = 22;
     int x11;
     int x12;
     int x21;
