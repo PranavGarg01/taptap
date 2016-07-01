@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-
 public class MainActivity extends AppCompatActivity  {
     String colors[] = {"#F44336","#F50057","#D500F9","#651FFF","#536DFE","#2196F3","#00B0FF","#18FFFF","#1DE9B6","#00E676","#AEEA00","#FFEA00","#FF9100","#F4511E"};
     // All these above colors are from google color palette.There are some 500s and some 600s. Total 15 color. and 14 according to array.
@@ -40,6 +39,7 @@ public class MainActivity extends AppCompatActivity  {
     long time_p1;
     long time_p2;
     int x = 0;
+    int xxx = 22;
     int x11;
     int x12;
     int x21;
@@ -50,14 +50,21 @@ public class MainActivity extends AppCompatActivity  {
     int last_task2=0;
     int pause;
     int n=0;
+    //it is a trial to eliminate a cheating practice that helps the players skip the swipes easily
+    int d1=0;
+    int d2=0;
+    int ac1=0;
+    int ac2=0;
     Runnable myRunnable;
     Handler handler = new Handler();
+    //hh
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.mp1 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
         this.mp2 = MediaPlayer.create(getApplicationContext(), R.raw.blop);
+
     }
 
     /**
@@ -116,6 +123,8 @@ public class MainActivity extends AppCompatActivity  {
         myLayout = (LinearLayout) findViewById(R.id.LinearLayout1);
         myLayout2 = (LinearLayout) findViewById(R.id.LinearLayout2);
         myLayout3 = (RelativeLayout) findViewById(R.id.pausemenu);
+        final Button pauseButton = (Button)findViewById(R.id.button1);
+        final Button resumeButton = (Button)findViewById(R.id.button2);
         myRunnable = new Runnable() {
             @Override
             public void run() {
@@ -148,10 +157,9 @@ public class MainActivity extends AppCompatActivity  {
                     //the main while loop
                     while (x < 60) {
                         try {
-                            while(pause == 1)
+                            while (pause == 1)//Pause menu loop
                             {
-                                Thread.sleep(800);
-
+                                Thread.sleep(500);
                             }
 
                             Log.d("s1=", "" + s1);
@@ -323,9 +331,7 @@ public class MainActivity extends AppCompatActivity  {
                                             }
                                         }
             );
-        // Setting up onClickListener for the pause button
-        final Button pauseButton = (Button)findViewById(R.id.button1);
-        final Button resumeButton = (Button)findViewById(R.id.button2);
+
         pauseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 pause = 1;
@@ -388,20 +394,31 @@ public class MainActivity extends AppCompatActivity  {
         if(eventAction == MotionEvent.ACTION_DOWN)
         {
             x11 = (int) m.getY();
+            d1 = x11;
+
         }
         if(eventAction == MotionEvent.ACTION_MOVE)
         {
             x21 = (int) m.getY();
-            if (x21 - x11 > 250)
-            {
-                task_progress1 = 1;
-                String color = color_palette(1);
-                myLayout.setBackgroundColor(Color.parseColor(color));
-                task1=0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
-            } else {
+            d2 = x21;
+            Log.i("d1",""+d1);
+            Log.d("d2",""+d2);
+            if((d2-d1)<70) {
+                if (x21 - x11 > 250) {
+                    task_progress1 = 1;
+                    String color = color_palette(1);
+                    myLayout.setBackgroundColor(Color.parseColor(color));
+                    task1 = 0;
+                    ((TextView) findViewById(R.id.textView)).setText("Tap Fast");
+                }
+                else
+                {
+                    task_progress1=0;
+                }
+            }else {
                 task_progress1 = 0;
             }
+            d1 = d2;
         }
 
     }
@@ -412,19 +429,26 @@ public class MainActivity extends AppCompatActivity  {
         if(eventAction == MotionEvent.ACTION_DOWN)
         {
             x11 = (int) m.getX();
+            ac1=0;
         }
         if(eventAction == MotionEvent.ACTION_MOVE)
         {
             x21 = (int) m.getX();
-            if (x21 - x11 < -250)
+            ac1++;
+            Log.i("ac1",""+ac1);
+            if(ac1>2) {
+                if (x21 - x11 < -250) {
+                    task_progress1 = 1;
+                    String color = color_palette(1);
+                    myLayout.setBackgroundColor(Color.parseColor(color));
+                    task1 = 0;
+                    ((TextView) findViewById(R.id.textView)).setText("Tap Fast");
+                } else {
+                    task_progress1 = 0;
+                }
+            }else
             {
-                task_progress1 = 1;
-                String color = color_palette(1);
-                myLayout.setBackgroundColor(Color.parseColor(color));
-                task1=0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
-            } else {
-                task_progress1 = 0;
+                task_progress1=0;
             }
         }
 
