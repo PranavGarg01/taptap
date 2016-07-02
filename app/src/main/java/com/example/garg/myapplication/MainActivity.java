@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity  {
     int s2 = 1;
     int s_inc1 = 0;
     int s_inc2 = 0;
-    int sec[] = new int[20];
+    int sec[] = new int[40];
     int task1 = 7;
     int task2 = 7;
     int task_progress1 = 1;
@@ -149,12 +149,12 @@ public class MainActivity extends AppCompatActivity  {
                     }
                 }
                 /* Giving numbers from 3-6 for waiting time for seconds. it puts them into a string */
-                    for (int i = 0; i < 20; i++) {
+                    for (int i = 0; i < 40; i++) {
                         sec[i] = 3 + (int) (Math.random() * ((6 - 3) + 1));
 
                     }
                     //the main while loop
-                    while (x < 60) {
+                    while (x < 120) {
                         try {
                             while (pause == 1)//Pause menu loop
                             {
@@ -506,16 +506,23 @@ public class MainActivity extends AppCompatActivity  {
         int eventAction = m.getAction();
         if (eventAction == MotionEvent.ACTION_DOWN) {
             time_p1 = System.currentTimeMillis();
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            if (System.currentTimeMillis() - time_p1 >= 900) {
-                vibrator.vibrate(300);
-                task_progress1 = 1;
-                task1 = 0;
-                ((TextView)findViewById(R.id.textView)).setText("Tap Fast");
+            /*
+            The following while loop was implemented in place of Action_Move trigger. It solves
+            the problem of long press not counting if the finger wasn't moved. So LONG PRESS works even if the
+            finger is very stable :)
+            */
+            int pannu = 1;
+            while(pannu == 1) {
+                if (System.currentTimeMillis() - time_p1 >= 900) {
+                    pannu = 0;
+                    vibrator.vibrate(300);
+                    task_progress1 = 1;
+                    task1 = 0;
+                    ((TextView) findViewById(R.id.textView)).setText("Tap Fast");
+                }
             }
         }
+
         if(eventAction == MotionEvent.ACTION_UP)
         {
             time_p1 = 0;
@@ -640,14 +647,20 @@ public class MainActivity extends AppCompatActivity  {
         int eventAction = m.getAction();
         if (eventAction == MotionEvent.ACTION_DOWN) {
             time_p2 = System.currentTimeMillis();
-        }
-        if (eventAction == MotionEvent.ACTION_MOVE)
-        {
-            if (System.currentTimeMillis() - time_p2 >= 900) {
-                task_progress2 = 1;
-                vibrator.vibrate(300);
-                task2 = 0;
-                ((TextView)findViewById(R.id.textView3)).setText("Tap Fast");
+            /*
+            The following while loop was implemented in place of Action_Move trigger. It solves
+            the problem of long press not counting if the finger wasn't moved. So LONG PRESS works even if the
+            finger is very stable :)
+            */
+            int pannu = 1;
+            while (pannu == 1) {
+                if (System.currentTimeMillis() - time_p2 >= 900) {
+                    pannu = 0;
+                    task_progress2 = 1;
+                    vibrator.vibrate(300);
+                    task2 = 0;
+                    ((TextView) findViewById(R.id.textView3)).setText("Tap Fast");
+                }
             }
         }
         if(eventAction == MotionEvent.ACTION_UP)
