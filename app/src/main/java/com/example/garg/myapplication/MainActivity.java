@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity  {
     int last_task2=0;
     int pause;
     int n=0;
+
     //it is a trial to eliminate a cheating practice that helps the players skip the swipes easily
     int d1=0;
     int d2=0;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity  {
         super.onStart();
         myLayout = (LinearLayout) findViewById(R.id.LinearLayout1);
         myLayout2 = (LinearLayout) findViewById(R.id.LinearLayout2);
-        myLayout3 = (RelativeLayout) findViewById(R.id.pausemenu);
+       // myLayout3 = (RelativeLayout) findViewById(R.id.pausemenu);
         final Button pauseButton = (Button)findViewById(R.id.button1);
         final Button resumeButton = (Button)findViewById(R.id.button2);
         myRunnable = new Runnable() {
@@ -314,8 +315,7 @@ public class MainActivity extends AppCompatActivity  {
                                                         swipe_down1(m);
                                                         break;
                                                     case 5:
-                                                        long_press1(m);
-                                                        break;
+                                                       return long_press1(m);
                                                     case 6:
                                                         dont_tap1(m);
                                                         break;
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity  {
                                         }
             );
 
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+        /*pauseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 pause = 1;
                 pauseButton.setVisibility(Button.GONE);
@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity  {
                 myLayout.setVisibility(LinearLayout.VISIBLE);
                 myLayout2.setVisibility(LinearLayout.VISIBLE);
             }
-        });
+        });*/
             //OnTouchListener for PLAYER 2
             myLayout2.setOnTouchListener(new LinearLayout.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent m) {
@@ -499,7 +499,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
     }
-    void long_press1(MotionEvent m)
+    public boolean long_press1(MotionEvent m)
     {
         task_progress1 = 0;
         Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
@@ -513,7 +513,8 @@ public class MainActivity extends AppCompatActivity  {
             */
             int pannu = 1;
             while(pannu == 1) {
-                if (System.currentTimeMillis() - time_p1 >= 900) {
+                Log.e("IN WHILE LOOP","PANNU=1");
+                if (((System.currentTimeMillis() - time_p1) >= 900)) {
                     pannu = 0;
                     vibrator.vibrate(300);
                     task_progress1 = 1;
@@ -521,13 +522,11 @@ public class MainActivity extends AppCompatActivity  {
                     ((TextView) findViewById(R.id.textView)).setText("Tap Fast");
                 }
             }
+            return true;
         }
-
-        if(eventAction == MotionEvent.ACTION_UP)
-        {
-            time_p1 = 0;
-        }
+        return true;
     }
+
     void dont_tap1(MotionEvent m)
     {
         Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
@@ -546,6 +545,7 @@ public class MainActivity extends AppCompatActivity  {
         TextView CountDisplay = (TextView)findViewById(R.id.textView1);
         if (eventAction == MotionEvent.ACTION_DOWN)
         {
+
             mp1.start();
             count += 1;
             CountDisplay.setText("" + count);
@@ -652,10 +652,10 @@ public class MainActivity extends AppCompatActivity  {
             the problem of long press not counting if the finger wasn't moved. So LONG PRESS works even if the
             finger is very stable :)
             */
-            int pannu = 1;
-            while (pannu == 1) {
+            int pannu2 = 1;
+            while (pannu2 == 1) {
                 if (System.currentTimeMillis() - time_p2 >= 900) {
-                    pannu = 0;
+                    pannu2 = 0;
                     task_progress2 = 1;
                     vibrator.vibrate(300);
                     task2 = 0;
