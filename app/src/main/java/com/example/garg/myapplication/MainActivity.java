@@ -1,11 +1,13 @@
 package com.example.garg.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -117,13 +119,14 @@ public class MainActivity extends AppCompatActivity  {
         }
         return tasker;
     }
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onStart() {
         super.onStart();
         myLayout = (LinearLayout) findViewById(R.id.LinearLayout1);
         myLayout2 = (LinearLayout) findViewById(R.id.LinearLayout2);
        // myLayout3 = (RelativeLayout) findViewById(R.id.pausemenu);
-        final Button pauseButton = (Button)findViewById(R.id.button1);
+        //final Button pauseButton = (Button)findViewById(R.id.button1);
         final Button resumeButton = (Button)findViewById(R.id.button2);
         myRunnable = new Runnable() {
             @Override
@@ -396,14 +399,18 @@ public class MainActivity extends AppCompatActivity  {
             d1 = x11;
 
         }
-        if(eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x11 = 0;
+        }
+        if(eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount()==1)
         {
             x21 = (int) m.getY();
             d2 = x21;
-            Log.i("d1",""+d1);
-            Log.d("d2",""+d2);
+            //Log.i("d1",""+d1);
+            //Log.d("d2",""+d2);
             if((d2-d1)<70) {
-                if (x21 - x11 > 250) {
+                if (x21 - x11 > 350) {
                     task_progress1 = 1;
                     String color = color_palette(1);
                     myLayout.setBackgroundColor(Color.parseColor(color));
@@ -430,13 +437,17 @@ public class MainActivity extends AppCompatActivity  {
             x11 = (int) m.getX();
             ac1=0;
         }
-        if(eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x11 = 0;
+        }
+        if(eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount() == 1)
         {
             x21 = (int) m.getX();
             ac1++;
             Log.i("ac1",""+ac1);
             if(ac1>2) {
-                if (x21 - x11 < -250) {
+                if (x21 - x11 < -350) {
                     task_progress1 = 1;
                     String color = color_palette(1);
                     myLayout.setBackgroundColor(Color.parseColor(color));
@@ -460,10 +471,14 @@ public class MainActivity extends AppCompatActivity  {
         {
             x11 = (int) m.getX();
         }
-        if(eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x11 = 0;
+        }
+        if(eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount()==1)
         {
             x21 = (int) m.getX();
-            if (x21 - x11 > 250)
+            if (x21 - x11 > 350)
             {
                 task_progress1 = 1;
                 String color = color_palette(1);
@@ -483,10 +498,14 @@ public class MainActivity extends AppCompatActivity  {
         {
             x11 = (int) m.getY();
         }
-        if(eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x11 = 0;
+        }
+        if(eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount()==1)
         {
             x21 = (int) m.getY();
-            if (x21 - x11 < -250)
+            if (x21 - x11 < -350)
             {
                 task_progress1 = 1;
                 String color = color_palette(1);
@@ -532,7 +551,7 @@ public class MainActivity extends AppCompatActivity  {
         Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         if (m.getAction() == MotionEvent.ACTION_DOWN)
         {
-            count -= 2;
+            count -= 10;
             vibrator.vibrate(100);
             task_progress1 = 1;
             ((TextView)findViewById(R.id.textView1)).setText("" + count);
@@ -563,10 +582,14 @@ public class MainActivity extends AppCompatActivity  {
         if (eventAction == MotionEvent.ACTION_DOWN) {
             x12 = ((int)m.getY());
         }
-        if (eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x12 = 0;
+        }
+        if (eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount()==1)
         {
             x22 = ((int)m.getY());
-            if (x22 - x12 < -250) {
+            if (x22 - x12 < -350) {
                 task_progress2 = 1;
                 String color = color_palette(2);
                 myLayout2.setBackgroundColor(Color.parseColor(color));
@@ -584,10 +607,14 @@ public class MainActivity extends AppCompatActivity  {
         if (eventAction == MotionEvent.ACTION_DOWN) {
             x12 = ((int)m.getX());
         }
-        if (eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x12 = 0;
+        }
+        if (eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount()==1)
         {
             x22 = ((int)m.getX());
-            if (x22 - x12 > 250) {
+            if (x22 - x12 > 350) {
                 task_progress2 = 1;
                 String color = color_palette(2);
                 myLayout2.setBackgroundColor(Color.parseColor(color));
@@ -605,10 +632,14 @@ public class MainActivity extends AppCompatActivity  {
         if (eventAction == MotionEvent.ACTION_DOWN) {
             x12 = ((int)m.getX());
         }
-        if (eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x12 = 0;
+        }
+        if (eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount()==1)
         {
             x22 = ((int)m.getX());
-            if (x22 - x12 < -250) {
+            if (x22 - x12 < -350) {
                 task_progress2 = 1;
                 String color = color_palette(2);
                 myLayout2.setBackgroundColor(Color.parseColor(color));
@@ -626,10 +657,14 @@ public class MainActivity extends AppCompatActivity  {
         if (eventAction == MotionEvent.ACTION_DOWN) {
             x12 = ((int)m.getY());
         }
-        if (eventAction == MotionEvent.ACTION_MOVE)
+        if(m.getPointerCount() > 1)
+        {
+            x12 = 0;
+        }
+        if (eventAction == MotionEvent.ACTION_MOVE && m.getPointerCount() ==1)
         {
             x22 = ((int)m.getY());
-            if (x22 - x12 > 250) {
+            if (x22 - x12 > 350) {
                 task_progress2 = 1;
                 String color = color_palette(2);
                 myLayout2.setBackgroundColor(Color.parseColor(color));
@@ -663,17 +698,18 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         }
-        if(eventAction == MotionEvent.ACTION_UP)
+        /*if(eventAction == MotionEvent.ACTION_UP)
         {
+            Log.i("HI","IT WAS UP");
             time_p2 = 0;
-        }
+        }*/
     }
     void dont_tap2(MotionEvent m)
     {
         Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         if (m.getAction() == MotionEvent.ACTION_DOWN)
         {
-            count2 -= 2;
+            count2 -= 10;
             vibrator.vibrate(100);
             task_progress2 = 1;
             ((TextView)findViewById(R.id.textView2)).setText("" + count2);
